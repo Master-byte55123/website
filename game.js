@@ -19,6 +19,11 @@ const gameLink = document.getElementById('game-link');
 // Ads Section Elements
 const adContainer = document.getElementById('ad-container');
 
+// Pop-up Ad Elements (Intrusive Ad)
+const popupAdOverlay = document.getElementById('popup-ad-overlay');
+const adCloseButton = document.getElementById('ad-close-button');
+
+
 // --- 2. Featured Game Data Array ---
 const featuredGames = [
     {
@@ -56,201 +61,224 @@ const featuredGames = [
 let currentGameIndex = 0;
 
 
-// NEW: Gaming Gear Ads Data Array - UPDATED SVG ICONS
+// NEW: Gaming Gear Ads Data Array
 const gamingAds = [
     {
-        name: "Neon Dragon Headset",
-        tagline: "Hear the enemy coming!",
-        price: "$129.99",
+        title: "Neon RGB Mouse",
+        description: "Ultra-lightweight, 16,000 DPI sensor, perfect for e-sports.",
+        price: "$79.99",
         link: "#",
-        // Headset SVG with more prominent design
-        icon: '<path d="M12 2a10 10 0 00-10 10v4a2 2 0 002 2h2v-4a6 6 0 0112 0v4h2a2 2 0 002-2v-4a10 10 0 00-10-10zM6 16v-4h2v4H6zm10 0v-4h2v4h-2z" fill="currentColor"/>'
+        iconSvg: '<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-mouse"><rect x="7" y="4" width="10" height="16" rx="5"/><path d="M12 4v4"/></svg>'
     },
     {
-        name: "Quantum Keyboard",
-        tagline: "Zero latency mechanical keys.",
-        price: "$199.99",
+        title: "Mechanical Keyboard",
+        description: "Clicky blue switches, full anti-ghosting, customizable per-key RGB.",
+        price: "$149.00",
         link: "#",
-        // Keyboard SVG with filled keys
-        icon: '<rect x="2" y="6" width="20" height="12" rx="2" ry="2" stroke="currentColor" stroke-width="2" fill="none"/><rect x="4" y="8" width="2" height="2" fill="currentColor"/><rect x="8" y="8" width="2" height="2" fill="currentColor"/><rect x="12" y="8" width="2" height="2" fill="currentColor"/><rect x="16" y="8" width="4" height="2" fill="currentColor"/><rect x="6" y="14" width="12" height="2" fill="currentColor"/>' 
+        iconSvg: '<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-keyboard"><path d="M10 12H8"/><path d="M16 12h-2"/><path d="M4 18v-5c0-1.1.9-2 2-2h12c1.1 0 2 .9 2 2v5"/><path d="M12 21v-3"/><path d="M6 21v-3"/><path d="M18 21v-3"/></svg>'
     },
     {
-        name: "Saber Mouse",
-        tagline: "The fastest clicks in the west.",
-        price: "$89.99",
+        title: "Pro Gaming Headset",
+        description: "7.1 Surround Sound, noise-canceling mic, memory foam earcups.",
+        price: "$99.50",
         link: "#",
-        // Mouse SVG - now a filled shape
-        icon: '<path d="M12 2a4 4 0 00-4 4v12a4 4 0 008 0V6a4 4 0 00-4-4z" stroke="currentColor" stroke-width="2" fill="currentColor"/><path d="M12 2v4" stroke="var(--color-background)" stroke-width="2" stroke-linecap="round"/>'
+        iconSvg: '<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-headphones"><path d="M3 14h3a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2z"/><path d="M21 14h-3a2 2 0 0 0-2 2v3a2 2 0 0 0 2 2h3a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2z"/><path d="M19 19v-4c0-4.42-3.58-8-8-8S3 10.58 3 15v4"/></svg>'
     }
 ];
 
 
-// --- 3. Function to generate SVG based on Genre ---
-function getGameIcon(genre) {
-    let svgInnerContent = '';
-    const iconSize = 100;
-    let iconColor = "#ff416c"; // Default Neon Pink
-    
-    if (genre.includes("RPG") || genre.includes("Adventure")) {
-        // Sword icon for RPG/Adventure
-        svgInnerContent = '<path d="M12 2l4.5 4.5L12 12l-4.5-5.5L12 2z" fill="currentColor"/><path d="M10 12l2 10 2-10" stroke="currentColor" stroke-width="2" fill="none"/>';
-        iconColor = "#ff416c"; // Pink
-    } else if (genre.includes("FPS") || genre.includes("Tactical")) {
-        // Target/Crosshair icon for Shooter
-        svgInnerContent = '<circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" fill="none"/><line x1="12" y1="2" x2="12" y2="22" stroke="currentColor" stroke-width="2"/><line x1="2" y1="12" x2="22" y2="12" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="12" r="2" fill="currentColor"/>';
-        iconColor = "#00bcd4"; // Cyan
-    } else if (genre.includes("Sports") || genre.includes("Racing")) {
-        // Car icon for Sports/Racing
-        svgInnerContent = '<path d="M17.5 17.5H6.5c-1.1 0-2-.9-2-2V9.5c0-1.1.9-2 2-2h11c1.1 0 2 .9 2 2v6c0 1.1-.9 2-2 2z" fill="currentColor" stroke="currentColor" stroke-width="1.5"/><circle cx="8.5" cy="14.5" r="1.5" fill="#1a192b"/><circle cx="15.5" cy="14.5" r="1.5" fill="#1a192b"/>';
-        iconColor = "#ffb000"; // Orange/Yellow
-    } else {
-        // Default Gamepad icon
-        svgInnerContent = '<rect x="2" y="4" width="20" height="16" rx="2" ry="2" stroke="currentColor" stroke-width="2" fill="none"/><path d="M8 10h8" stroke="currentColor" stroke-width="2"/><path d="M12 6v8" stroke="currentColor" stroke-width="2"/>';
-        iconColor = "#e0e0e0";
-    }
-
-    return `<svg width="${iconSize}" height="${iconSize}" viewBox="0 0 24 24" fill="none" style="color: ${iconColor};">
-                ${svgInnerContent}
-            </svg>`;
+// --- 3. Custom Alert/Message Box Function ---
+/**
+ * Shows a custom message box instead of using the native alert().
+ * @param {string} title - The title of the message.
+ * @param {string} content - The main content/body of the message.
+ */
+function showCustomMessage(title, content) {
+    messageTitle.textContent = title;
+    messageContent.textContent = content;
+    messageOverlay.classList.add('visible');
+    // Stop the user from scrolling the background while the message is visible
+    document.body.style.overflow = 'hidden'; 
 }
 
-// --- 4. Function to rotate the Featured Game content ---
-function rotateFeaturedGame() {
-    const game = featuredGames[currentGameIndex];
+// Close the custom message box
+messageCloseButton.addEventListener('click', () => {
+    messageOverlay.classList.remove('visible');
+    document.body.style.overflow = ''; // Restore scrolling
+});
+
+
+// --- 4. Chill Area Logic ---
+// Event listener for the main Chill Area button
+chillButton.addEventListener('click', () => {
+    const text = chillTextarea.value.trim();
+    if (text.length < 10) {
+        showCustomMessage(
+            'Wait a Minute!',
+            'Your thoughts must be at least 10 characters long to join the Chill Area. Give us more detail!'
+        );
+    } else {
+        // Here you would typically send the data to a server (like Firestore)
+        showCustomMessage(
+            'Welcome to the Chill Area!',
+            `Thanks for sharing your thoughts (Length: ${text.length}). Your post is live!`
+        );
+        chillTextarea.value = ''; // Clear the text area
+        updateCharCounter(); // Reset the counter
+    }
+});
+
+// Event listener for the Copy button
+copyButton.addEventListener('click', () => {
+    const text = chillTextarea.value.trim();
+    if (text.length === 0) {
+         showCustomMessage(
+            'Nothing to Copy',
+            'Please type something in the box first!'
+        );
+        return;
+    }
     
-    gameContainer.style.opacity = 0;
+    // Use document.execCommand('copy') for better iframe compatibility
+    try {
+        chillTextarea.select();
+        document.execCommand('copy');
+        showCustomMessage(
+            'Copied!',
+            'Your thoughts have been copied to your clipboard.'
+        );
+    } catch (err) {
+        showCustomMessage(
+            'Copy Failed',
+            'Could not copy text automatically. Please select and copy manually.'
+        );
+    }
+});
+
+// Character Counter Logic
+chillTextarea.addEventListener('input', updateCharCounter);
+
+function updateCharCounter() {
+    const count = chillTextarea.value.length;
+    charCounter.textContent = `${count} Characters (Min 10 Required)`;
+    
+    // Style the counter based on character count
+    if (count < 10) {
+        charCounter.style.color = '#ff416c'; // Neon Pink
+        charCounter.style.fontWeight = 'bold';
+    } else {
+        charCounter.style.color = '#00bcd4'; // Neon Cyan
+        charCounter.style.fontWeight = 'normal';
+    }
+}
+// Initial counter update on load
+updateCharCounter();
+
+
+// --- 5. Featured Game Rotator Logic ---
+
+/**
+ * Renders the current featured game details to the DOM.
+ */
+function renderGame(index) {
+    const game = featuredGames[index];
+    
+    // Add fade out class for transition
+    gameContainer.style.opacity = '0'; 
 
     setTimeout(() => {
+        // Update content
         gameTitle.textContent = game.title;
         gameGenre.textContent = game.genre;
         gameDescription.textContent = game.description;
         gameLink.href = game.link;
-        gameIconContainer.innerHTML = getGameIcon(game.genre);
+        
+        // Generate a random placeholder icon (since we cannot load images/logos)
+        gameIconContainer.innerHTML = generateRandomGameIcon();
 
-        gameContainer.style.opacity = 1;
+        // Add fade in class
+        gameContainer.style.opacity = '1';
 
+    }, 500); // Wait for fade out to complete (0.5s)
+}
+
+/**
+ * Generates a simple SVG icon based on game type/mood.
+ * @returns {string} SVG string for a game-themed icon.
+ */
+function generateRandomGameIcon() {
+    const icons = [
+        // Controller Icon
+        '<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 24 24" fill="none" stroke="#ffb000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-gamepad-2"><path d="M6 12v-2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v2"/><path d="M12 15a3 3 0 0 1-3 3h-2a2 2 0 0 1-2-2v-2a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2z"/><path d="M12 15a3 3 0 0 0 3 3h2a2 2 0 0 0 2-2v-2a2 2 0 0 0-2-2h-2a2 2 0 0 0-2 2z"/></svg>',
+        // Sword Icon
+        '<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 24 24" fill="none" stroke="#ff416c" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-sword"><path d="M20 19v-4.5a.5.5 0 0 0-.5-.5h-11a.5.5 0 0 0-.5.5V19"/><path d="M20 19v3a1 1 0 0 1-1 1h-14a1 1 0 0 1-1-1v-3"/><path d="M15 19v-4.5a.5.5 0 0 0-.5-.5h-5a.5.5 0 0 0-.5.5V19"/><path d="M12 2v5"/><path d="M12 7h2"/><path d="M12 7L10 9"/><path d="M10 7h2"/></svg>',
+        // Space Shuttle Icon
+        '<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 24 24" fill="none" stroke="#00bcd4" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-rocket"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c1.26-1.5 1.5-3 1.5-3l1.5-1.5a.5.5 0 0 1 1 0l1.5 1.5c1.26-1.5 5-2 5-2s-.5-3.74-2-5c-1.5-1.26-3-1.5-3-1.5l-1.5-1.5a.5.5 0 0 1 0-1l1.5-1.5c-1.5-1.26-2-5-2-5s3.74.5 5 2c1.26 1.5 1.5 3 1.5 3l1.5 1.5a.5.5 0 0 0 0-1l-1.5-1.5c-1.26-1.5-5-2-5-2s.5 3.74 2 5c1.5 1.26 3 1.5 3 1.5l1.5 1.5a.5.5 0 0 0 1 0l1.5-1.5c1.26-1.5 5-2 5-2s-.5-3.74-2-5c-1.5-1.26-3-1.5-3-1.5L4.5 16.5z"/></svg>'
+    ];
+    // Simple rotation logic based on the current game index
+    const iconIndex = currentGameIndex % icons.length;
+    return icons[iconIndex];
+}
+
+/**
+ * Cycles to the next featured game every 8 seconds.
+ */
+function startGameRotator() {
+    setInterval(() => {
         currentGameIndex = (currentGameIndex + 1) % featuredGames.length;
-    }, 500); 
-}
-
-// --- 5. Function to render the Gaming Ads ---
-function renderGamingAds() {
-    adContainer.innerHTML = gamingAds.map(ad => {
-        // Use a generic SVG wrapper for the ad icons, making them smaller and yellow
-        const adIconSvg = `<svg width="48" height="48" viewBox="0 0 24 24" fill="none" style="color: var(--color-neon-yellow); margin: 0 auto 5px;">
-            ${ad.icon}
-        </svg>`;
-
-        return `
-            <a href="${ad.link}" class="ad-card" target="_blank">
-                <div>
-                    ${adIconSvg}
-                    <h4>${ad.name}</h4>
-                </div>
-                <div>
-                    <p>${ad.tagline}</p>
-                    <div class="ad-price">${ad.price}</div>
-                </div>
-            </a>
-        `;
-    }).join('');
+        renderGame(currentGameIndex);
+    }, 8000); // Change game every 8 seconds
 }
 
 
-// --- 6. Function to show the custom message box (Replaces alert()) ---
-function showMessage(title, content) {
-    messageTitle.textContent = title;
-    messageContent.textContent = content;
-    messageOverlay.classList.add('visible'); 
-}
+// --- 6. Gaming Gear Ads Logic ---
 
-// --- 7. Function to hide the custom message box ---
-function hideMessage() {
-    messageOverlay.classList.remove('visible'); 
-}
-
-// --- 8. Real-Time Character Counter Handler ---
-function updateCharacterCount() {
-    const count = chillTextarea.value.length;
-    charCounter.textContent = `${count} Characters (Min 10 Required)`;
-    
-    if (count < 10) {
-        charCounter.style.color = '#ff416c'; 
-    } else {
-        charCounter.style.color = '#00bcd4';
-    }
-}
-
-
-// --- 9. Main Submission Handler ---
-function handleSubmit() {
-    const userThoughts = chillTextarea.value.trim();
-
-    if (userThoughts.length >= 10) {
-        showMessage(
-            'Submission Confirmed!', 
-            `Thanks for your ${userThoughts.length}-character report. Entering Chill Area now!`
-        );
-        
-        chillTextarea.value = '';
-        updateCharacterCount();
-        
-    } else if (userThoughts.length > 0) {
-         showMessage(
-            'Hold Up, Gamer!', 
-            'Your message is a little short. Please enter a minimum of 10 characters.'
-        );
-    } else {
-        showMessage(
-            'Input Required', 
-            "Please type a message before joining the Chill Area."
-        );
-    }
-}
-
-// --- 10. Copy Functionality Handler ---
-function handleCopy() {
-    const userThoughts = chillTextarea.value.trim();
-    
-    if (userThoughts.length > 0) {
-        chillTextarea.select(); 
-        
-        try {
-            document.execCommand('copy');
-            showMessage('Copied!', 'Text copied to clipboard!');
-        } catch (err) {
-            console.error('Copy failed:', err);
-            showMessage('Copy Failed', 'Please copy the text manually.');
-        }
-        
-        chillTextarea.setSelectionRange(0, 0);
-        
-    } else {
-        showMessage('Nothing to Copy', 'The text area is empty.');
-    }
+/**
+ * Renders the dynamic advertising cards.
+ */
+function renderAds() {
+    adContainer.innerHTML = gamingAds.map(ad => `
+        <a href="${ad.link}" class="ad-card" target="_blank">
+            <div class="ad-icon">${ad.iconSvg}</div>
+            <div class="ad-details">
+                <h4>${ad.title}</h4>
+                <p>${ad.description}</p>
+            </div>
+            <div class="ad-price">${ad.price}</div>
+        </a>
+    `).join('');
+    // Apply neon cyan color to the SVG icons within the ads
+    document.querySelectorAll('.ad-icon svg').forEach(svg => {
+        svg.setAttribute('stroke', '#00bcd4');
+    });
 }
 
 
-// --- 11. Attach event listeners and start dynamic features ---
-document.addEventListener('DOMContentLoaded', () => {
-    // Start real-time character counter
-    updateCharacterCount();
-    
-    // Start featured game rotation
-    rotateFeaturedGame(); 
-    setInterval(rotateFeaturedGame, 5000); 
-    
-    // Render the Ads
-    renderGamingAds();
+// --- 7. Intrusive Pop-up Ad Logic ---
+
+// Function to display the pop-up ad
+function showAdPopup() {
+    // Show the ad after a short delay to be extra annoying (2 seconds)
+    setTimeout(() => {
+        popupAdOverlay.classList.add('visible');
+        document.body.style.overflow = 'hidden'; // Lock background scrolling
+    }, 2000);
+}
+
+// Close button event listener
+adCloseButton.addEventListener('click', () => {
+    popupAdOverlay.classList.remove('visible');
+    document.body.style.overflow = ''; // Restore scrolling
 });
 
-chillTextarea.addEventListener('input', updateCharacterCount);
-chillButton.addEventListener('click', handleSubmit);
-copyButton.addEventListener('click', handleCopy);
-messageCloseButton.addEventListener('click', hideMessage);
-
-messageOverlay.addEventListener('click', (e) => {
-    if (e.target === messageOverlay) {
-        hideMessage();
-    }
-}); MEOWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW
+// --- 8. Initialization (run on page load) ---
+document.addEventListener('DOMContentLoaded', () => {
+    // Initial render of the featured game
+    renderGame(currentGameIndex);
+    // Start the game rotator
+    startGameRotator();
+    // Render the ads
+    renderAds();
+    // Show the intrusive ad popup
+    showAdPopup(); 
+});
