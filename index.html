@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Gamer World</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        /* Use Inter font globally */
+        body { font-family: 'Inter', sans-serif; }
+    </style>
+</head>
+<body>
+
+    <!-- Custom Message Box Overlay (Used for internal app messages) -->
+    <div id="message-overlay" class="message-overlay">
+        <div class="message-box">
+            <h4 id="message-title">Alert!</h4>
+            <p id="message-content">This is a custom message.</p>
+            <button id="message-close-button" class="primary-button">OK, I'm Ready!</button>
+        </div>
+    </div>
+
+    <!-- NEW: Pop-up Ad Overlay (The intrusive one that appears on a timer) -->
+    <div id="popup-ad-overlay" class="popup-ad-overlay">
+        <div class="popup-ad-box">
+            <button id="popup-ad-close" class="ad-close-button">X</button>
+            <div id="popup-ad-content">
+                <!-- Content injected by game.js -->
+            </div>
+        </div>
+    </div>
+    
+    <header>
+        <h1>WELCOME</h1>
+        <p class="tagline">This is a place where gamers interact with each other freely without judgment!</p>
+    </header>
+
+    <!-- Community Links Section -->
+    <section class="links-section">
+        <h2 class="section-title">Community Links</h2>
+        <nav>
+            <ul>
+                <li><a href="#chill-area">Chill Area</a></li>
+                <li><a href="#featured-game-rotator">Featured Game</a></li>
+                <li><a href="#gaming-gear-ads">Gaming Gear Ads</a></li>
+                <li><a href="#about-community">About Us</a></li>
+                <li><a href="https://discord.gg/gaming" target="_blank">Discord Server</a></li>
+            </ul>
+        </nav>
+    </section>
+
+    <!-- Chill Area Section -->
+    <section id="chill-area" class="chill-area">
+        <h2 class="section-title">Join the Chill Area</h2>
+        <p>Tell us all about your experience in The Gamer World. Your thoughts help us grow!</p>
+        
+        <textarea id="chill-text" placeholder="Share your favorite gaming memories, give feedback, or just say hello..."></textarea>
+        
+        <!-- Character Counter -->
+        <div id="char-counter" class="counter-text">0 Characters (Min 10 Required)</div>
+        
+        <button id="chill-button" class="primary-button">Join Chill Area</button>
+        <button id="copy-button" class="secondary-button">Copy Thoughts</button>
+    </section>
+
+    <!-- Featured Game Rotator Section -->
+    <section id="featured-game-rotator" class="featured-game-rotator">
+        <h2 class="section-title">🔥Featured Game of the Week 🔥</h2>
+        
+        <div id="featured-game-container" class="featured-card">
+            
+            <!-- This area now only contains the SVG icon container -->
+            <div id="game-placeholder" class="game-placeholder">
+                <div id="game-icon-container" style="width: 100px; height: 100px;"></div>
+            </div>
+            
+            <div class="game-details">
+                <h3 id="game-title" class="game-title">Game Title Loading...</h3>
+                <p id="game-genre" class="game-genre">Genre Loading...</p>
+                <p id="game-description" class="game-description">Description loading...</p>
+                <a id="game-link" href="#" class="game-link" target="_blank">Check It Out!</a>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Gaming Gear Ads Section -->
+    <section id="gaming-gear-ads" class="ads-section">
+        <h2 class="section-title">🤑 Sponsored Gaming Gear 🤑</h2>
+        <div id="ad-container" class="ad-container">
+            <!-- Ad Content will be dynamically inserted here by game.js -->
+        </div>
+    </section>
+
+    <!-- About Community Section -->
+    <section id="about-community" class="about-community">
+        <h2 class="section-title">About Our Community</h2>
+        <p>The Gamer World is dedicated to creating a positive and inclusive space for gamers of all platforms, genres, and skill levels. Whether you're a competitive e-sports enthusiast or a casual mobile player, you belong here.</p>
+        <p>We believe that gaming is more than just a hobby—it's a social connection. Join the conversation, find new teammates, and share the excitement of the latest releases.</p>
+        <p>Don't forget to connect with us on our <a href="https://twitter.com/TheGamerWorld" target="_blank" class="inline-link">social media channels</a>!</p>
+    </section>
+
+    <!-- Hero Image Placeholder (Fixed Background for Epic Setup) -->
+    <div class="hero-image">
+        <!-- The background color/image is set via CSS in styles.css -->
+        <h2 style="color: white; padding: 100px 0; font-size: 4em; text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);">EPIC GAMING SETUP</h2>
+    </div>
+
+    <footer>
+        <p>&copy; 2025 The Gamer World | Powered by VoltBytes</p>
+    </footer>
+
+    <script src="game.js"></script>
+</body>
+</html>
